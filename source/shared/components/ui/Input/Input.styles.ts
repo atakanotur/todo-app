@@ -1,42 +1,35 @@
 import { StyleSheet } from 'react-native';
+import { ColorPalette } from '@/source/features/theme/types/theme.types';
+import { UI } from '@/source/shared/constants/ui';
 
-export const styles = StyleSheet.create({
+export const createStyles = (colors: ColorPalette) => StyleSheet.create({
   wrapper: {
     gap: 6,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: '#1C1C1E',
-  },
-  required: {
-    color: '#FF3B30',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderWidth: 1.5,
-    borderColor: '#E5E5EA',
-    borderRadius: 10,
-    backgroundColor: '#FAFAFA',
-    minHeight: 48,
+    borderColor: colors.border,
+    borderRadius: UI.radius.md,
+    backgroundColor: colors.card,
+    minHeight: UI.input.height,
   },
   inputFocused: {
-    borderColor: '#007AFF',
-    backgroundColor: '#fff',
+    borderColor: colors.primary,
+    backgroundColor: colors.background,
   },
   inputError: {
-    borderColor: '#FF3B30',
-    backgroundColor: '#FFF5F5',
+    borderColor: colors.notification,
   },
   inputDisabled: {
-    backgroundColor: '#F2F2F7',
-    opacity: 0.6,
+    backgroundColor: colors.border,
+    opacity: UI.opacity.disabled,
   },
   input: {
     flex: 1,
-    fontSize: 15,
-    color: '#1C1C1E',
+    fontSize: UI.fontSize.md,
+    color: colors.text,
     paddingHorizontal: 14,
     paddingVertical: 12,
   },
@@ -51,12 +44,5 @@ export const styles = StyleSheet.create({
   },
   iconRight: {
     paddingRight: 12,
-  },
-  helperText: {
-    fontSize: 12,
-    color: '#8E8E93',
-  },
-  errorText: {
-    color: '#FF3B30',
   },
 });
