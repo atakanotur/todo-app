@@ -1,6 +1,8 @@
 import React, { memo, useCallback } from "react";
-import { Pressable, PressableProps, Text, TextStyle, ViewStyle, ActivityIndicator } from "react-native";
-import { styles } from "./Button.styles";
+import { Pressable, PressableProps, ViewStyle, ActivityIndicator } from "react-native";
+import { Text } from "../Text";
+import { useTheme } from "@/source/features/theme/hooks/useTheme";
+import { createStyles } from "./Button.styles";
 
 export interface ButtonProps extends Omit<PressableProps, 'style'> {
     label: string;
@@ -11,7 +13,6 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
     rightIcon?: React.ReactNode;
     fullWidth?: boolean;
     style?: ViewStyle;
-    labelStyle?: TextStyle;
 }
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
@@ -30,6 +31,9 @@ export const Button = memo<ButtonProps>(({
     onPress,
     ...rest
 }) => {
+    const { colors } = useTheme();
+    const styles = createStyles(colors);
+
     const isDisabled = disabled || loading;
 
     const handlePress = useCallback(
@@ -38,6 +42,12 @@ export const Button = memo<ButtonProps>(({
         },
         [isDisabled, onPress]
     );
+
+    const getTextColor = () => {
+        if (variant === 'primary' || variant === 'danger') return '#FFFFFF'; // White text on solid backgrounds
+        if (variant === 'ghost') return 'primary';
+        return 'text'; 
+    };
 
     return (
         <Pressable
@@ -60,13 +70,17 @@ export const Button = memo<ButtonProps>(({
             {loading ? (
                 <ActivityIndicator
                     size="small"
-                    color={variant === 'primary' ? '#fff' : '#007AFF'}
+                    color={variant === 'primary' || variant === 'danger' ? '#FFFFFF' : colors.primary}
                     testID="button-loading"
                 />
             ) : (
                 <>
                     {leftIcon}
-                    <Text style={[styles.label, styles[`${variant}Label`], styles[`${size}Label`]]}>
+                    <Text 
+                        variant={size === 'sm' ? 'sm' : size === 'md' ? 'md' : 'lg'} 
+                        weight="semibold" 
+                        color={getTextColor()}
+                    >
                         {label}
                     </Text>
                     {rightIcon}

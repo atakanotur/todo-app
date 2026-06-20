@@ -1,7 +1,9 @@
 import { memo } from 'react'
 import React, { forwardRef, useCallback, useState } from 'react'
-import { Pressable, Text, TextInput, TextInputProps, View, ViewStyle } from 'react-native'
-import { styles } from './Input.styles'
+import { Pressable, TextInput, TextInputProps, View, ViewStyle } from 'react-native'
+import { Text } from '../Text'
+import { useTheme } from '@/source/features/theme/hooks/useTheme'
+import { createStyles } from './Input.styles'
 
 export interface InputProps extends TextInputProps {
     label?: string
@@ -33,6 +35,8 @@ export const Input = memo(forwardRef<TextInput, InputProps>(
         },
         ref
     ) => {
+        const { colors } = useTheme();
+        const styles = createStyles(colors);
         const [isFocused, setIsFocused] = useState(false)
 
         const handleFocus = useCallback(
@@ -56,9 +60,9 @@ export const Input = memo(forwardRef<TextInput, InputProps>(
         return (
             <View style={[styles.wrapper, containerStyle]}>
                 {label && (
-                    <Text style={styles.label}>
+                    <Text variant="sm" weight="medium" color="text">
                         {label}
-                        {required && <Text style={styles.required}> *</Text>}
+                        {required && <Text variant="sm" weight="medium" color="notification"> *</Text>}
                     </Text>
                 )}
 
@@ -80,7 +84,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(
                             rightIcon ? styles.inputWithRightIcon : undefined,
                             style
                         ]}
-                        placeholderTextColor="#8E8E93"
+                        placeholderTextColor={colors.border}
                         editable={editable}
                         onFocus={handleFocus}
                         onBlur={handleBlur}
@@ -103,7 +107,7 @@ export const Input = memo(forwardRef<TextInput, InputProps>(
                 </View>
 
                 {(error || hint) && (
-                    <Text style={[styles.helperText, hasError && styles.errorText]}>
+                    <Text variant="xs" color={hasError ? 'notification' : '#8E8E93'}>
                         {error || hint}
                     </Text>
                 )}
