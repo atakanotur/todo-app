@@ -1,7 +1,6 @@
 import {
   queryOptions,
   useMutation,
-  useQuery,
   useQueryClient,
 } from '@tanstack/react-query'
 import { apiClient } from '@/source/services/api'
@@ -11,7 +10,7 @@ import { tokenExpirationHandler } from '@/source/services/tokenExpirationHandler
 import { silentAuthService } from '@/source/services/silentAuthService'
 import { useAuthStore } from '../store/auth.store'
 import { AuthApi } from '../api/auth.api'
-import { UserProfile, LoginCredentials, User } from '../types/auth.types'
+import { LoginCredentials, User } from '../types/auth.types'
 
 export const authQueryKeys = {
   all: ['auth'] as const,
@@ -21,10 +20,10 @@ export const authQueryKeys = {
 
 export const sessionQueryOptions = queryOptions({
   queryKey: authQueryKeys.session(),
-  queryFn: async (): Promise<UserProfile | null> => {
+  queryFn: async (): Promise<User | null> => {
     const authState = await silentAuthService.attemptSilentAuth()
     if (authState.isAuthenticated && authState.user) {
-      return authState.user as UserProfile
+      return authState.user as User
     }
     return null
   },
@@ -35,7 +34,7 @@ export const sessionQueryOptions = queryOptions({
 export function useSession() {
   const queryClient = useQueryClient()
 
-  const cachedUser = queryClient.getQueryData<UserProfile | null>(
+  const cachedUser = queryClient.getQueryData<User | null>(
     authQueryKeys.session()
   )
 
@@ -60,8 +59,6 @@ export function useLoginMutation() {
         lastName,
         username: responseUsername,
       } = response
-
-      console.log("loginResponse : ", response);
 
       await signIn({ accessToken, refreshToken, expiresIn: 60 })
 

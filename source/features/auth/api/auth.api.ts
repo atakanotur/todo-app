@@ -1,5 +1,5 @@
 import { apiClient } from '@/source/services/api'
-import { LoginResponse } from '../types/auth.types'
+import { LoginResponse, User } from '../types/auth.types'
 
 export const AuthApi = {
   test: async () => {
@@ -12,6 +12,10 @@ export const AuthApi = {
       password,
       expiresInMins: 60,
     })
+    return response.data
+  },
+  me: async () => {
+    const response = await apiClient.post<User>('/auth/me')
     return response.data
   },
 }

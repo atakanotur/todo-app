@@ -1,19 +1,13 @@
-//source/services/silentAuthService.ts
-
 import { tokenManager } from './tokenManager'
 import { tokenRefreshService } from './tokenRefreshService'
 import { apiClient, RefreshResponse } from './api'
-
-interface UserProfile {
-  id: number
-  email: string
-  name: string
-}
+import { AuthApi } from '../features/auth/api/auth.api'
+import { User } from '../features/auth/types/auth.types'
 
 interface AuthState {
   isAuthenticated: boolean
   isLoading: boolean
-  user: UserProfile | null
+  user: User | null
   error: string | null
 }
 
@@ -44,14 +38,14 @@ class SilentAuthService {
       tokenManager.setAccessToken(accessToken, expiresIn)
       await tokenManager.setRefreshToken(newRefreshToken)
 
-      const userResponse = await apiClient.get<UserProfile>('/auth/me')
+      const userResponse = await AuthApi.me()
 
       tokenRefreshService.startAutoResfresh()
 
       return {
         isAuthenticated: true,
         isLoading: false,
-        user: userResponse.data,
+        user: userResponse,
         error: null,
       }
     } catch (error) {
