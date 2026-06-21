@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTodos } from '../queries/todo.queries';
 import { useTodoStore } from '../store/todo.store';
@@ -82,6 +82,20 @@ export const TodoListScreen = () => {
           />
         }
       />
+
+      {/* Floating Action Button (FAB) */}
+      <Pressable 
+        style={({ pressed }) => [
+          styles.fab, 
+          { backgroundColor: colors.primary },
+          pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }
+        ]}
+        onPress={() => router.push(ROUTES.PROTECTED.CREATE_TODO as any)}
+        accessibilityRole="button"
+        accessibilityLabel="Yeni Görev Ekle"
+      >
+        <Ionicons name="add" size={32} color="#FFFFFF" />
+      </Pressable>
     </Screen>
   );
 };
@@ -101,6 +115,22 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: UI.spacing.lg,
+    paddingBottom: 100, // Make room for FAB
     flexGrow: 1,
+  },
+  fab: {
+    position: 'absolute',
+    bottom: 32,
+    right: 24,
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 5,
   }
 });
