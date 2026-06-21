@@ -1,5 +1,5 @@
 import React, { memo, useCallback } from "react";
-import { Pressable, PressableProps, ViewStyle, ActivityIndicator } from "react-native";
+import { Pressable, PressableProps, ViewStyle, ActivityIndicator, StyleProp } from "react-native";
 import { Text } from "../Text";
 import { useTheme } from "@/source/features/theme/hooks/useTheme";
 import { createStyles } from "./Button.styles";
@@ -12,7 +12,7 @@ export interface ButtonProps extends Omit<PressableProps, 'style'> {
     leftIcon?: React.ReactNode;
     rightIcon?: React.ReactNode;
     fullWidth?: boolean;
-    style?: ViewStyle;
+    style?: StyleProp<ViewStyle>;
 }
 
 type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';

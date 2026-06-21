@@ -2,13 +2,13 @@ import React, { useState } from 'react'
 import { View, StyleSheet } from 'react-native'
 import { Text, Input, Button } from "@/source/shared/components/ui"
 import { Screen } from "@/source/shared/components/layout"
-import { useAuth } from '../hooks/useAuth'
+import { useLoginMutation } from '../queries/auth.queries'
 
 export const LoginScreen = () => {
   const [username, setUsername] = useState('emilys') // Using emilys as it is one of dummyjson's default users
   const [password, setPassword] = useState('emilyspass')
 
-  const { login, isLoggingIn, error } = useAuth()
+  const { mutate: login, isPending: isLoggingIn, isError: error } = useLoginMutation()
 
   const handleLogin = () => {
     login({ username, password })

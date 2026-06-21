@@ -187,6 +187,11 @@ class ApiClient {
     })
     return { success: true, data: response.data }
   }
+
+  public async delete<T>(endpoint: string): Promise<ApiResponse<T>> {
+    const response = await this.axiosInstance.delete<T>(endpoint)
+    return { success: true, data: response.data }
+  }
 }
 
 export const apiClient = ApiClient.getInstance()

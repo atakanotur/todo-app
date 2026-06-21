@@ -4,7 +4,7 @@ import { tokenManager } from '@/source/services/tokenManager'
 interface AuthState {
   accessToken: string | null
   isAuthenticated: boolean
-  signIn: (tokens: { accessToken: string; expiresIn: number }) => Promise<void>
+  signIn: (tokens: { accessToken: string; refreshToken: string; expiresIn: number }) => Promise<void>
   signOut: () => Promise<void>
   hydrate: () => Promise<string | null>
   updateAccessToken: (newAccessToken: string) => Promise<void>
@@ -15,8 +15,9 @@ export const useAuthStore = create<AuthState>((set) => ({
   refreshToken: null,
   isAuthenticated: false,
 
-  signIn: async ({ accessToken, expiresIn }) => {
+  signIn: async ({ accessToken, refreshToken, expiresIn }) => {
     tokenManager.setAccessToken(accessToken, expiresIn)
+    await tokenManager.setRefreshToken(refreshToken)
     set({ accessToken, isAuthenticated: true })
   },
 
