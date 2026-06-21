@@ -16,5 +16,6 @@ export const ROUTES = {
     ROOT: '/(protected)',
     SETTINGS: '/(protected)/settings',
     EDIT_PROFILE: '/(protected)/edit-profile',
+    CREATE_TODO: '/(protected)/create-todo',
   },
 } as const
