@@ -1,18 +1,23 @@
 import { useMutation } from '@tanstack/react-query'
 import { login } from '../api'
 import { useAuthStore } from '../store/auth.store'
+import { LoginCredentials } from '../types/auth.types'
 
 export const useAuth = () => {
   const signIn = useAuthStore((state) => state.signIn)
 
   const loginMutation = useMutation({
-    mutationFn: async (credentials: { username: string; password: string }) => {
+    mutationFn: async (credentials: LoginCredentials) => {
       const response = await login(credentials.username, credentials.password)
       return response
     },
     onSuccess: (data) => {
       if (data && data.accessToken) {
-        signIn({ accessToken: data.accessToken, expiresIn: 60 * 60 * 1000 })
+        signIn({
+          accessToken: data.accessToken,
+          refreshToken: data.refreshToken || '',
+          expiresIn: 60 * 60 * 1000,
+        })
       }
     },
     onError: (error) => {

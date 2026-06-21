@@ -5,7 +5,7 @@ import { tokenRefreshService } from './tokenRefreshService'
 import { apiClient, RefreshResponse } from './api'
 
 interface UserProfile {
-  id: string
+  id: number
   email: string
   name: string
 }

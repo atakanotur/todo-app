@@ -1,16 +1,5 @@
 import { apiClient } from '@/source/services/api'
-
-export type LoginResponse = {
-  id: number
-  username: string
-  email: string
-  firstName: string
-  lastName: string
-  gender: string
-  image: string
-  accessToken: string
-  refreshToken: string
-}
+import { LoginResponse } from '../types/auth.types'
 
 export const AuthApi = {
   test: async () => {

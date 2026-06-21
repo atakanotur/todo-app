@@ -10,24 +10,8 @@ import { tokenRefreshService } from '@/source/services/tokenRefreshService'
 import { tokenExpirationHandler } from '@/source/services/tokenExpirationHandler'
 import { silentAuthService } from '@/source/services/silentAuthService'
 import { useAuthStore } from '../store/auth.store'
-
-export interface UserProfile {
-  id: string
-  email: string
-  name: string
-}
-
-export interface LoginCredentials {
-  email: string
-  password: string
-}
-
-interface LoginResponse {
-  accessToken: string
-  refreshToken: string
-  expiresIn: number
-  user: UserProfile
-}
+import { AuthApi } from '../api/auth.api'
+import { UserProfile, LoginCredentials, User } from '../types/auth.types'
 
 export const authQueryKeys = {
   all: ['auth'] as const,
@@ -63,13 +47,33 @@ export function useLoginMutation() {
   const signIn = useAuthStore((state) => state.signIn)
 
   return useMutation({
-    mutationFn: async ({ email, password }: LoginCredentials) => {
-      const response = await apiClient.post<LoginResponse>('/auth/login', {
+    mutationFn: async ({ username, password }: LoginCredentials) => {
+      const response = await AuthApi.login(username, password)
+      const {
+        accessToken,
+        refreshToken,
         email,
-        password,
-      })
-      const { accessToken, expiresIn, user } = response.data
-      await signIn({ accessToken, expiresIn })
+        firstName,
+        gender,
+        id,
+        image,
+        lastName,
+        username: responseUsername,
+      } = response
+
+      console.log("loginResponse : ", response);
+
+      await signIn({ accessToken, refreshToken, expiresIn: 60 })
+
+      const user: User = {
+        id,
+        username: responseUsername,
+        email,
+        firstName,
+        lastName,
+        gender,
+        image,
+      }
       return user
     },
     onSuccess: (user) => {
