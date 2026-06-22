@@ -10,7 +10,11 @@ import { tokenExpirationHandler } from '@/source/services/tokenExpirationHandler
 import { silentAuthService } from '@/source/services/silentAuthService'
 import { useAuthStore } from '../store/auth.store'
 import { AuthApi } from '../api/auth.api'
-import { LoginCredentials, User } from '../types/auth.types'
+import {
+  LoginCredentials,
+  RegisterCredentials,
+  User,
+} from '../types/auth.types'
 
 export const authQueryKeys = {
   all: ['auth'] as const,
@@ -46,8 +50,8 @@ export function useLoginMutation() {
   const signIn = useAuthStore((state) => state.signIn)
 
   return useMutation({
-    mutationFn: async ({ username, password }: LoginCredentials) => {
-      const response = await AuthApi.login(username, password)
+    mutationFn: async (credentials: LoginCredentials) => {
+      const response = await AuthApi.login(credentials)
       const {
         accessToken,
         refreshToken,
@@ -72,6 +76,23 @@ export function useLoginMutation() {
         image,
       }
       return user
+    },
+    onSuccess: (user) => {
+      queryClient.setQueryData(authQueryKeys.session(), user)
+    },
+  })
+}
+
+export function useRegisterMutation() {
+  const queryClient = useQueryClient()
+
+  return useMutation({
+    mutationFn: async (credentials: RegisterCredentials) => {
+      const response = await AuthApi.register(credentials)
+
+      console.log("Registered User : ", response);
+
+      return response
     },
     onSuccess: (user) => {
       queryClient.setQueryData(authQueryKeys.session(), user)

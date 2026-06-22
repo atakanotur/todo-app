@@ -15,6 +15,14 @@ export interface LoginCredentials {
   password: string
 }
 
+export interface RegisterCredentials {
+  firstName: string
+  lastName: string
+  username: string
+  email: string
+  password: string
+}
+
 export interface LoginResponse {
   id: number
   username: string
