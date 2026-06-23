@@ -28,11 +28,11 @@ export const RegisterScreen = () => {
   const { control, handleSubmit } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
-      firstName: '',
-      lastName: '',
-      username: '',
-      email: '',
-      password: '',
+      firstName: 'Atakan',
+      lastName: 'Otur',
+      username: 'atakanotur',
+      email: 'atakanotur@gmail.com',
+      password: '12345678',
     }
   });
 
@@ -40,19 +40,19 @@ export const RegisterScreen = () => {
     registerMutation.mutate(data, {
       onSuccess: () => {
         Alert.alert(
-          "Registration Successful!", 
+          "Registration Successful!",
           "Your account has been created successfully. Please log in.",
           [{ text: "OK", onPress: () => router.replace(ROUTES.AUTH.LOGIN as any) }]
         );
       },
       onError: (error) => {
-         Alert.alert("Registration Failed", "An error occurred, please try again.");
+        Alert.alert("Registration Failed", "An error occurred, please try again.");
       }
     });
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
@@ -98,15 +98,15 @@ export const RegisterScreen = () => {
             secureTextEntry
           />
         </View>
-        
+
         <View style={styles.footer}>
-          <Button 
+          <Button
             label="Sign Up"
             onPress={handleSubmit(onSubmit)}
             loading={registerMutation.isPending}
             disabled={registerMutation.isPending}
           />
-          <Button 
+          <Button
             label="Already have an account? Login"
             variant="ghost"
             onPress={() => router.back()}

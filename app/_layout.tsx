@@ -33,7 +33,7 @@ function RootLayoutNav() {
     useEffect(() => {
         if (!isReady) return;
 
-        if(!rootNavigationState.key) return;
+        if (!rootNavigationState.key) return;
 
         const inAuthGroup = segments[0] === '(auth)';
 

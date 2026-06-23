@@ -11,7 +11,7 @@ import { useTheme } from '@/source/features/theme/hooks/useTheme';
 import { UI } from '@/source/shared/constants/ui';
 
 const createTodoSchema = z.object({
-  todo: z.string().min(1, 'Görev metni zorunludur').max(150, 'Çok uzun bir metin'),
+  todo: z.string().min(1, 'Task text is required').max(150, 'Text is too long'),
 });
 
 type CreateTodoFormValues = z.infer<typeof createTodoSchema>;
@@ -49,22 +49,22 @@ export const CreateTodoScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView
+    <KeyboardAvoidingView 
       style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
       <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled">
         <View style={styles.header}>
-          <Text variant="displaySm" weight="bold">Yeni Görev</Text>
-          <Text variant="md" color="#8E8E93">Planlamak başarının yarısıdır.</Text>
+          <Text variant="displaySm" weight="bold">New Task</Text>
+          <Text variant="md" color="#8E8E93">What needs to be done?</Text>
         </View>
 
         <View style={styles.form}>
           <ControlledInput
             control={control}
             name="todo"
-            label="Görev"
-            placeholder="Ne yapman gerekiyor?"
+            label="Task"
+            placeholder="e.g., Buy groceries..."
             autoCapitalize="sentences"
             multiline
             numberOfLines={3}
@@ -75,8 +75,8 @@ export const CreateTodoScreen = () => {
       </ScrollView>
 
       <View style={[styles.footer, { borderTopColor: colors.border }]}>
-        <Button
-          label="Görevi Oluştur"
+        <Button 
+          label="Create Task"
           onPress={handleSubmit(onSubmit)}
           loading={createTodo.isPending}
           disabled={createTodo.isPending}

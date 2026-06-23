@@ -39,7 +39,7 @@ export const LoginScreen = () => {
   };
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={[styles.container, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : undefined}
     >
@@ -72,7 +72,7 @@ export const LoginScreen = () => {
               loading={isLoggingIn}
               label="Login"
             />
-            
+
             <Button
               onPress={() => router.push(ROUTES.AUTH.REGISTER as any)}
               disabled={isLoggingIn}
