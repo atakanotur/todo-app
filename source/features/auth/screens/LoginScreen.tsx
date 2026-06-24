@@ -11,7 +11,7 @@ import { ROUTES } from '@/source/shared/constants/routes';
 import { UI } from '@/source/shared/constants/ui';
 
 const loginSchema = z.object({
-  username: z.string().min(1, 'Username is required'),
+  email: z.string().min(1, 'Email is required'), // Not using .email() strictly here to allow DummyJSON usernames like "emilys"
   password: z.string().min(1, 'Password is required'),
 });
 
@@ -25,15 +25,16 @@ export const LoginScreen = () => {
   const { control, handleSubmit } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: 'emilys', // DummyJSON default user
-      password: 'emilyspass', // DummyJSON default pass
+      email: 'atakanotur@gmail.com',
+      password: '12345678',
     }
   });
 
   const onSubmit = (data: LoginFormValues) => {
     login(data, {
       onError: () => {
-        Alert.alert("Login Failed", "Invalid username or password.");
+        console.log('Login failed', error);
+        Alert.alert("Login Failed", "Invalid email or password.");
       }
     });
   };
@@ -52,10 +53,11 @@ export const LoginScreen = () => {
         <View style={styles.form}>
           <ControlledInput
             control={control}
-            name="username"
-            label="Username"
-            placeholder="Your username"
+            name="email"
+            label="Email"
+            placeholder="Your email address"
             autoCapitalize="none"
+            keyboardType="email-address"
           />
           <ControlledInput
             control={control}

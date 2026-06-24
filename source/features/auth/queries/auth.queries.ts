@@ -52,33 +52,22 @@ export function useLoginMutation() {
   return useMutation({
     mutationFn: async (credentials: LoginCredentials) => {
       const response = await AuthApi.login(credentials)
-      const {
+
+      const { user, accessToken, refreshToken } = response
+
+      await signIn({
         accessToken,
         refreshToken,
-        email,
-        firstName,
-        gender,
-        id,
-        image,
-        lastName,
-        username: responseUsername,
-      } = response
+        expiresIn: 60,
+      })
 
-      await signIn({ accessToken, refreshToken, expiresIn: 60 })
-
-      const user: User = {
-        id,
-        username: responseUsername,
-        email,
-        firstName,
-        lastName,
-        gender,
-        image,
-      }
       return user
     },
     onSuccess: (user) => {
       queryClient.setQueryData(authQueryKeys.session(), user)
+    },
+    onError: (error) => {
+      console.log('Login failed', error)
     },
   })
 }
@@ -90,7 +79,7 @@ export function useRegisterMutation() {
     mutationFn: async (credentials: RegisterCredentials) => {
       const response = await AuthApi.register(credentials)
 
-      console.log("Registered User : ", response);
+      console.log('Registered User : ', response)
 
       return response
     },
