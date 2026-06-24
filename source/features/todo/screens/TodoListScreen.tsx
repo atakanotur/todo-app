@@ -21,7 +21,7 @@ export const TodoListScreen = () => {
   const filteredTodos = useMemo(() => {
     return todos.filter(item => {
       // 1. Search Filter (by todo text)
-      const matchesSearch = item.todo.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
 
       // 2. Status Filter
       const matchesStatus = statusFilter === 'all'
@@ -84,9 +84,9 @@ export const TodoListScreen = () => {
       />
 
       {/* Floating Action Button (FAB) */}
-      <Pressable 
+      <Pressable
         style={({ pressed }) => [
-          styles.fab, 
+          styles.fab,
           { backgroundColor: colors.primary },
           pressed && { opacity: 0.8, transform: [{ scale: 0.95 }] }
         ]}

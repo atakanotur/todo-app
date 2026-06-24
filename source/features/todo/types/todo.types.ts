@@ -4,17 +4,18 @@ export interface Todo {
   description: string | null
   completed: boolean
   userId: string
-  createdAt: string 
+  createdAt: string
   updatedAt: string
 }
 
 export interface CreateTodoDTO {
-  todo: string
-  completed: boolean
-  userId: number
+  title: string
+  description?: string
+  completed?: boolean
 }
 
 export interface UpdateTodoDTO {
-  todo?: string
+  title?: string
+  description?: string
   completed?: boolean
 }
