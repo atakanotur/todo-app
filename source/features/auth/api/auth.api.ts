@@ -1,42 +1,19 @@
 import { apiClient } from '@/source/services/api'
-import {
-  LoginCredentials,
-  LoginResponse,
-  RegisterCredentials,
-  User,
-} from '../types/auth.types'
+import { LoginCredentials, LoginResponse, User } from '../types/auth.types'
 
 export const AuthApi = {
-  test: async () => {
-    const response = await apiClient.get('/test')
+  login: async (credentials: LoginCredentials) => {
+    console.log('here')
+    const response = await apiClient.post<LoginResponse>(
+      '/auth/login',
+      credentials
+    )
+    console.log('login response: ', response)
     return response.data
   },
-  login: async ({
-    username,
-    password,
-  }: LoginCredentials): Promise<LoginResponse> => {
-    const response = await apiClient.post<LoginResponse>('/auth/login', {
-      username,
-      password,
-      expiresInMins: 60,
-    })
-    return response.data
-  },
-  register: async ({
-    username,
-    firstName,
-    lastName,
-    email,
-    password,
-  }: RegisterCredentials): Promise<User> => {
-    const response = await apiClient.post<User>('/users/add', {
-      username,
-      password,
-      firstName,
-      lastName,
-      email,
-    })
-
+  register: async (credentials: any) => {
+    const response = await apiClient.post<User>('/auth/register', credentials)
+    console.log('register response: ', response)
     return response.data
   },
   me: async () => {

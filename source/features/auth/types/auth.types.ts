@@ -1,17 +1,13 @@
 export interface User {
-  id: number
-  username: string
+  id: string
   email: string
-  firstName: string
-  lastName: string
-  gender: string
-  image: string
+  name: string | null
+  createdAt: string
+  updatedAt: string
 }
 
-export interface UserProfile {}
-
 export interface LoginCredentials {
-  username: string
+  email: string
   password: string
 }
 
@@ -24,13 +20,7 @@ export interface RegisterCredentials {
 }
 
 export interface LoginResponse {
-  id: number
-  username: string
-  email: string
-  firstName: string
-  lastName: string
-  gender: string
-  image: string
   accessToken: string
   refreshToken: string
+  user: User
 }
