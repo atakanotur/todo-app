@@ -19,7 +19,9 @@ export const TodoItem = memo<TodoItemProps>(({ todo, onPress }) => {
   const handleToggleComplete = (checked: boolean) => {
     updateTodo.mutate({
       id: todo.id,
-      data: { completed: checked }
+      data: {
+        completed: checked,
+      }
     });
   };
 
@@ -30,33 +32,33 @@ export const TodoItem = memo<TodoItemProps>(({ todo, onPress }) => {
   const isPending = updateTodo.isPending || deleteTodo.isPending;
 
   return (
-    <Card 
-      shadow="sm" 
-      style={styles.card} 
+    <Card
+      shadow="sm"
+      style={styles.card}
       onPress={onPress}
       disabled={isPending}
     >
       <View style={styles.content}>
-        <Checkbox 
-          checked={todo.completed} 
-          onCheckedChange={handleToggleComplete} 
+        <Checkbox
+          checked={todo.completed}
+          onCheckedChange={handleToggleComplete}
           disabled={isPending}
         />
-        
+
         <View style={styles.textContent}>
-          <Text 
-            variant="md" 
+          <Text
+            variant="md"
             weight="semibold"
             style={todo.completed ? styles.completedText : undefined}
             color={todo.completed ? '#8E8E93' : 'text'}
           >
-            {todo.todo}
+            {todo.title}
           </Text>
         </View>
 
         <View style={styles.actions}>
-          <Pressable 
-            onPress={handleDelete} 
+          <Pressable
+            onPress={handleDelete}
             hitSlop={8}
             disabled={isPending}
             style={({ pressed }) => [pressed && { opacity: 0.6 }]}
