@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { useTodos } from '../queries/todo.queries';
@@ -15,24 +15,9 @@ export const TodoListScreen = () => {
   const { colors } = useTheme();
   const router = useRouter();
 
-  const { data: todos = [], isLoading, isRefetching, refetch } = useTodos();
-  const { searchQuery, statusFilter, setSearchQuery } = useTodoStore();
-
-  const filteredTodos = useMemo(() => {
-    return todos.filter(item => {
-      // 1. Search Filter (by todo text)
-      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
-
-      // 2. Status Filter
-      const matchesStatus = statusFilter === 'all'
-        ? true
-        : statusFilter === 'completed'
-          ? item.completed
-          : !item.completed;
-
-      return matchesSearch && matchesStatus;
-    });
-  }, [todos, searchQuery, statusFilter]);
+  const { data: filteredTodos = [], isLoading, isRefetching, refetch } = useTodos();
+  const searchQuery = useTodoStore((state) => state.searchQuery);
+  const setSearchQuery = useTodoStore((state) => state.setSearchQuery);
 
   if (isLoading && !isRefetching) {
     return (
