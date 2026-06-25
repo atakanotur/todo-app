@@ -44,7 +44,7 @@ export const Button = memo<ButtonProps>(({
     );
 
     const getTextColor = () => {
-        if (variant === 'primary' || variant === 'danger') return '#FFFFFF'; // White text on solid backgrounds
+        if (variant === 'primary' || variant === 'danger') return '#FFFFFF';
         if (variant === 'ghost') return 'primary';
         return 'text'; 
     };

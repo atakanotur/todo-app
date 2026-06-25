@@ -67,10 +67,7 @@ export function useLoginMutation() {
     },
     onSuccess: (user) => {
       queryClient.setQueryData(authQueryKeys.session(), user)
-    },
-    onError: (error) => {
-      console.log('Login failed', error)
-    },
+    }
   })
 }
 
@@ -80,9 +77,6 @@ export function useRegisterMutation() {
   return useMutation({
     mutationFn: async (credentials: RegisterCredentials) => {
       const response = await AuthApi.register(credentials)
-
-      console.log('Registered User : ', response)
-
       return response
     },
     onSuccess: (user) => {

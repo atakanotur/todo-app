@@ -5,7 +5,7 @@ import {apiClient,RefreshResponse} from './api'
 
 class TokenRefreshService {
   private refreshTimer: NodeJS.Timeout | null = null
-  private readonly REFRESH_THRESHOLD = 60 // Refresh 60 seconds before expiry
+  private readonly REFRESH_THRESHOLD = 60
 
   startAutoResfresh(): void {
     this.scheduleRefresh()
@@ -24,7 +24,6 @@ class TokenRefreshService {
     const timeUntilExpiry = tokenManager.getTimeUntilExpiry()
 
     if (timeUntilExpiry <= 0) {
-      // Token already expired, refresh immediately
       this.performRefresh()
       return
     }
@@ -61,7 +60,6 @@ class TokenRefreshService {
       this.scheduleRefresh()
     } catch (error) {
       console.error('Token, refresh filaed', error)
-      //Handle refresh failure- typically logout user
       this.handleRefreshFailuer()
     }
   }

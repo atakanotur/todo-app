@@ -45,7 +45,6 @@ export const LoginScreen = () => {
   const onSubmit = (data: LoginFormValues) => {
     login(data, {
       onError: () => {
-        console.log('Login failed', error);
         Alert.alert("Login Failed", "Invalid email or password.");
       }
     });

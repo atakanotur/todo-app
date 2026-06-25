@@ -1,9 +1,10 @@
-import React, { useMemo } from 'react';
+import React, { useCallback } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTodos } from '../queries/todo.queries';
+import { useTodos, useUpdateTodo, useDeleteTodo } from '../queries/todo.queries';
 import { useTodoStore } from '../store/todo.store';
 import { TodoItem } from '../components/TodoItem';
+import { Todo } from '../types/todo.types';
 import { EmptyState, Input, Text } from '@/source/shared/components/ui';
 import { useTheme } from '@/source/features/theme/hooks/useTheme';
 import { UI } from '@/source/shared/constants/ui';
@@ -15,24 +16,42 @@ export const TodoListScreen = () => {
   const { colors } = useTheme();
   const router = useRouter();
 
-  const { data: todos = [], isLoading, isRefetching, refetch } = useTodos();
-  const { searchQuery, statusFilter, setSearchQuery } = useTodoStore();
+  const { data: filteredTodos = [], isLoading, isRefetching, refetch } = useTodos();
+  const searchQuery = useTodoStore((state) => state.searchQuery);
+  const setSearchQuery = useTodoStore((state) => state.setSearchQuery);
 
-  const filteredTodos = useMemo(() => {
-    return todos.filter(item => {
-      // 1. Search Filter (by todo text)
-      const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const updateTodo = useUpdateTodo();
+  const deleteTodo = useDeleteTodo();
 
-      // 2. Status Filter
-      const matchesStatus = statusFilter === 'all'
-        ? true
-        : statusFilter === 'completed'
-          ? item.completed
-          : !item.completed;
-
-      return matchesSearch && matchesStatus;
+  const handleToggleComplete = useCallback((id: string, checked: boolean) => {
+    updateTodo.mutate({
+      id,
+      data: { completed: checked },
     });
-  }, [todos, searchQuery, statusFilter]);
+  }, [updateTodo]);
+
+  const handleDelete = useCallback((id: string) => {
+    deleteTodo.mutate(id);
+  }, [deleteTodo]);
+
+  const isPending = updateTodo.isPending || deleteTodo.isPending;
+
+  const keyExtractor = useCallback((item: Todo) => item.id.toString(), []);
+
+  const renderItem = useCallback(({ item }: { item: Todo }) => (
+    <TodoItem
+      todo={item}
+      onToggleComplete={handleToggleComplete}
+      onDelete={handleDelete}
+      disabled={isPending}
+    />
+  ), [handleToggleComplete, handleDelete, isPending]);
+
+  const getItemLayout = useCallback((_: any, index: number) => ({
+    length: 72,
+    offset: 72 * index,
+    index,
+  }), []);
 
   if (isLoading && !isRefetching) {
     return (
@@ -58,8 +77,13 @@ export const TodoListScreen = () => {
 
       <FlatList
         data={filteredTodos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <TodoItem todo={item} />}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        getItemLayout={getItemLayout}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={true}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl
@@ -115,7 +139,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: UI.spacing.lg,
-    paddingBottom: 100, // Make room for FAB
+    paddingBottom: 100,
     flexGrow: 1,
   },
   fab: {

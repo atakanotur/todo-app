@@ -6,7 +6,7 @@ import { ThemeMode } from '../types/theme.types'
 interface ThemeState {
   mode: ThemeMode
   setMode: (mode: ThemeMode) => void
-  hasHydrated: boolean // Flicker önlemek için hydration kontrolü
+  hasHydrated: boolean
   setHasHydrated: (state: boolean) => void
 }
 

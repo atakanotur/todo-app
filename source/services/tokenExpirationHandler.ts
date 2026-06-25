@@ -1,5 +1,3 @@
-//source/services/tokenExpirationHandler.ts
-
 import { tokenManager } from './tokenManager'
 import { tokenRefreshService } from './tokenRefreshService'
 import { AppState, AppStateStatus } from 'react-native'

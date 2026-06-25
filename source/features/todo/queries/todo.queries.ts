@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import { TodoAPI } from '../api/todo.api'
 import { CreateTodoDTO, UpdateTodoDTO } from '../types/todo.types'
 
+import { useTodoStore } from '../store/todo.store'
+
 export const TODO_KEYS = {
   all: ['todos'] as const,
   lists: () => [...TODO_KEYS.all, 'list'] as const,
@@ -9,9 +11,28 @@ export const TODO_KEYS = {
 }
 
 export const useTodos = () => {
+  const searchQuery = useTodoStore((state) => state.searchQuery)
+  const statusFilter = useTodoStore((state) => state.statusFilter)
+
   return useQuery({
     queryKey: TODO_KEYS.lists(),
     queryFn: TodoAPI.getTodos,
+    select: (todos) => {
+      return todos.filter((item) => {
+        const matchesSearch = item.title
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase())
+
+        const matchesStatus =
+          statusFilter === 'all'
+            ? true
+            : statusFilter === 'completed'
+            ? item.completed
+            : !item.completed
+
+        return matchesSearch && matchesStatus
+      })
+    },
   })
 }
 
