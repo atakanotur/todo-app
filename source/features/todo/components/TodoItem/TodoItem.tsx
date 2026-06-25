@@ -1,48 +1,47 @@
-import React, { memo } from 'react';
+import React, { memo, useCallback } from 'react';
 import { View, StyleSheet, Pressable } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { Todo } from '../../types/todo.types';
-import { useUpdateTodo, useDeleteTodo } from '../../queries/todo.queries';
 import { Card, Checkbox, Text } from '@/source/shared/components/ui';
 import { useTheme } from '@/source/features/theme/hooks/useTheme';
 
 export interface TodoItemProps {
   todo: Todo;
-  onPress?: () => void;
+  onToggleComplete: (id: string, checked: boolean) => void;
+  onDelete: (id: string) => void;
+  onPress?: (id: string) => void;
+  disabled?: boolean;
 }
 
-export const TodoItem = memo<TodoItemProps>(({ todo, onPress }) => {
+export const TodoItem = memo<TodoItemProps>(({ todo, onToggleComplete, onDelete, onPress, disabled }) => {
   const { colors } = useTheme();
-  const updateTodo = useUpdateTodo();
-  const deleteTodo = useDeleteTodo();
 
-  const handleToggleComplete = (checked: boolean) => {
-    updateTodo.mutate({
-      id: todo.id,
-      data: {
-        completed: checked,
-      }
-    });
-  };
+  const handleToggleComplete = useCallback((checked: boolean) => {
+    onToggleComplete(todo.id, checked);
+  }, [onToggleComplete, todo.id]);
 
-  const handleDelete = () => {
-    deleteTodo.mutate(todo.id);
-  };
+  const handleDelete = useCallback(() => {
+    onDelete(todo.id);
+  }, [onDelete, todo.id]);
 
-  const isPending = updateTodo.isPending || deleteTodo.isPending;
+  const handlePress = useCallback(() => {
+    if (onPress) {
+      onPress(todo.id);
+    }
+  }, [onPress, todo.id]);
 
   return (
     <Card
       shadow="sm"
       style={styles.card}
-      onPress={onPress}
-      disabled={isPending}
+      onPress={onPress ? handlePress : undefined}
+      disabled={disabled}
     >
       <View style={styles.content}>
         <Checkbox
           checked={todo.completed}
           onCheckedChange={handleToggleComplete}
-          disabled={isPending}
+          disabled={disabled}
         />
 
         <View style={styles.textContent}>
@@ -60,7 +59,7 @@ export const TodoItem = memo<TodoItemProps>(({ todo, onPress }) => {
           <Pressable
             onPress={handleDelete}
             hitSlop={8}
-            disabled={isPending}
+            disabled={disabled}
             style={({ pressed }) => [pressed && { opacity: 0.6 }]}
             accessibilityRole="button"
             accessibilityLabel="Görevi Sil"

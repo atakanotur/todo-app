@@ -1,7 +1,7 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { View, FlatList, StyleSheet, ActivityIndicator, RefreshControl, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
-import { useTodos } from '../queries/todo.queries';
+import { useTodos, useUpdateTodo, useDeleteTodo } from '../queries/todo.queries';
 import { useTodoStore } from '../store/todo.store';
 import { TodoItem } from '../components/TodoItem';
 import { EmptyState, Input, Text } from '@/source/shared/components/ui';
@@ -18,6 +18,22 @@ export const TodoListScreen = () => {
   const { data: filteredTodos = [], isLoading, isRefetching, refetch } = useTodos();
   const searchQuery = useTodoStore((state) => state.searchQuery);
   const setSearchQuery = useTodoStore((state) => state.setSearchQuery);
+
+  const updateTodo = useUpdateTodo();
+  const deleteTodo = useDeleteTodo();
+
+  const handleToggleComplete = useCallback((id: string, checked: boolean) => {
+    updateTodo.mutate({
+      id,
+      data: { completed: checked },
+    });
+  }, [updateTodo]);
+
+  const handleDelete = useCallback((id: string) => {
+    deleteTodo.mutate(id);
+  }, [deleteTodo]);
+
+  const isPending = updateTodo.isPending || deleteTodo.isPending;
 
   if (isLoading && !isRefetching) {
     return (
@@ -44,7 +60,14 @@ export const TodoListScreen = () => {
       <FlatList
         data={filteredTodos}
         keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => <TodoItem todo={item} />}
+        renderItem={({ item }) => (
+          <TodoItem
+            todo={item}
+            onToggleComplete={handleToggleComplete}
+            onDelete={handleDelete}
+            disabled={isPending}
+          />
+        )}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl
