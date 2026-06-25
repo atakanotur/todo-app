@@ -23,20 +23,12 @@ function RootLayoutNav() {
 
         const inAuthGroup = segments[0] === '(auth)';
 
-        console.log('RootLayoutNav useEffect: ', inAuthGroup, isAuthenticated, segments, rootNavigationState?.key);
-
         if (inAuthGroup && isAuthenticated) {
             router.replace(ROUTES.TABS.HOME);
         } else if (!inAuthGroup && !isAuthenticated) {
             router.replace(ROUTES.AUTH.LOGIN);
         }
-        setTimeout(() => {
-            SplashScreen.hideAsync().catch(() => {/* ignore */});
-        }, 100);
-
     }, [isReady, isAuthenticated, segments, rootNavigationState?.key]);
-
-    
 
     if (!isReady) {
         return null;

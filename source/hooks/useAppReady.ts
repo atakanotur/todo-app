@@ -19,6 +19,7 @@ export function useAppReady() {
         console.error('Hydration error : ', error)
       } finally {
         setIsReady(true)
+        await SplashScreen.hideAsync()
       }
     }
 
