@@ -1,10 +1,11 @@
 import { create } from 'zustand'
 import { tokenManager } from '@/source/services/tokenManager'
+import { secureStorage } from '@/source/services/secureStorage'
 
 interface AuthState {
   accessToken: string | null
   isAuthenticated: boolean
-  signIn: (tokens: { accessToken: string; refreshToken: string; expiresIn: number }) => Promise<void>
+  signIn: (tokens: { accessToken: string; refreshToken: string; expiresIn: number; rememberMe?: boolean; email?: string }) => Promise<void>
   signOut: () => Promise<void>
   hydrate: () => Promise<string | null>
   updateAccessToken: (newAccessToken: string) => Promise<void>
@@ -15,9 +16,15 @@ export const useAuthStore = create<AuthState>((set) => ({
   refreshToken: null,
   isAuthenticated: false,
 
-  signIn: async ({ accessToken, refreshToken, expiresIn }) => {
+  signIn: async ({ accessToken, refreshToken, expiresIn, rememberMe = true, email }) => {
     tokenManager.setAccessToken(accessToken, expiresIn)
-    await tokenManager.setRefreshToken(refreshToken)
+    await tokenManager.setRefreshToken(refreshToken, rememberMe)
+    
+    if (rememberMe && email) {
+      await secureStorage.storeRememberedEmail(email)
+    } else if (!rememberMe) {
+      await secureStorage.removeRememberedEmail()
+    }
     set({ accessToken, isAuthenticated: true })
   },
 
@@ -31,9 +38,9 @@ export const useAuthStore = create<AuthState>((set) => ({
       const accessToken = tokenManager.getAccessToken();
       const refreshToken = await tokenManager.getRefreshToken()
 
-      if (accessToken && refreshToken) {
+      if (refreshToken) {
         set({ accessToken, isAuthenticated: true })
-        return accessToken
+        return refreshToken
       }
     } catch (error) {
       console.error('Hydration error', error)

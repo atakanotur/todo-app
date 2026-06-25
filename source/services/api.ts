@@ -138,16 +138,14 @@ class ApiClient {
       }
     )
 
-    const {
-      accessToken,
-      expiresIn,
-      refreshToken: newRefreshToken,
-    } = response.data
+    const accessToken = response.data.accessToken || (response.data as any).token
+    const expiresIn = response.data.expiresIn || (response.data as any).expires_in || 3600
+    const newRefreshToken = response.data.refreshToken || refreshToken
 
     tokenRotationHandler.handleRotation({
       accessToken,
       refreshToken: newRefreshToken,
-      expiresIn,
+      expiresIn: Number(expiresIn),
     })
 
     return accessToken
