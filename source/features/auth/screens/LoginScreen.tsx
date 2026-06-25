@@ -1,18 +1,20 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform, Alert, ScrollView } from 'react-native';
-import { useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import * as z from 'zod';
 import { useRouter } from 'expo-router';
-import { Text, Button, ControlledInput } from "@/source/shared/components/ui";
+import { Text, Button, ControlledInput, Checkbox } from "@/source/shared/components/ui";
 import { useLoginMutation } from '../queries/auth.queries';
 import { useTheme } from '@/source/features/theme/hooks/useTheme';
 import { ROUTES } from '@/source/shared/constants/routes';
 import { UI } from '@/source/shared/constants/ui';
+import { secureStorage } from '@/source/services/secureStorage';
 
 const loginSchema = z.object({
-  email: z.string().min(1, 'Email is required'), // Not using .email() strictly here to allow DummyJSON usernames like "emilys"
+  email: z.email().min(1, 'Email is required'),
   password: z.string().min(1, 'Password is required'),
+  rememberMe: z.boolean().optional(),
 });
 
 type LoginFormValues = z.infer<typeof loginSchema>;
@@ -22,13 +24,23 @@ export const LoginScreen = () => {
   const router = useRouter();
   const { mutate: login, isPending: isLoggingIn, isError: error } = useLoginMutation();
 
-  const { control, handleSubmit } = useForm<LoginFormValues>({
+  const { control, handleSubmit, setValue } = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
       email: 'atakanotur@gmail.com',
       password: '12345678',
+      rememberMe: true,
     }
   });
+
+  useEffect(() => {
+    secureStorage.getRememberedEmail().then((savedEmail) => {
+      if (savedEmail) {
+        setValue('email', savedEmail);
+        setValue('rememberMe', true);
+      }
+    });
+  }, [setValue]);
 
   const onSubmit = (data: LoginFormValues) => {
     login(data, {
@@ -65,6 +77,18 @@ export const LoginScreen = () => {
             label="Password"
             placeholder="Your password"
             secureTextEntry
+          />
+          <Controller
+            control={control}
+            name="rememberMe"
+            render={({ field: { value, onChange } }) => (
+              <Checkbox
+                checked={!!value}
+                onCheckedChange={onChange}
+                label="Remember Me"
+                style={styles.checkboxContainer}
+              />
+            )}
           />
 
           <View style={styles.footer}>
@@ -104,6 +128,10 @@ const styles = StyleSheet.create({
   },
   form: {
     gap: UI.spacing.lg,
+  },
+  checkboxContainer: {
+    marginTop: -UI.spacing.xs,
+    marginBottom: UI.spacing.xs,
   },
   footer: {
     marginTop: UI.spacing.md,

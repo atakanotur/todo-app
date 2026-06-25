@@ -58,7 +58,9 @@ export function useLoginMutation() {
       await signIn({
         accessToken,
         refreshToken,
-        expiresIn: 60,
+        expiresIn: (response as any).expiresIn || (response as any).expires_in || 3600,
+        rememberMe: credentials.rememberMe,
+        email: credentials.email,
       })
 
       return user

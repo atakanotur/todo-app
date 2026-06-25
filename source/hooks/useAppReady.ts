@@ -16,15 +16,14 @@ export function useAppReady() {
         const token = await hydrate()
         if (token) await queryClient.fetchQuery(sessionQueryOptions)
       } catch (error) {
-        console.error('Hydration error', error)
+        console.error('Hydration error : ', error)
       } finally {
         setIsReady(true)
-        await SplashScreen.hideAsync()
       }
     }
 
     prepare()
-  }, [])
+  }, [hydrate])
 
   return { isReady }
 }
