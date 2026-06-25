@@ -4,6 +4,7 @@ import { useRouter } from 'expo-router';
 import { useTodos, useUpdateTodo, useDeleteTodo } from '../queries/todo.queries';
 import { useTodoStore } from '../store/todo.store';
 import { TodoItem } from '../components/TodoItem';
+import { Todo } from '../types/todo.types';
 import { EmptyState, Input, Text } from '@/source/shared/components/ui';
 import { useTheme } from '@/source/features/theme/hooks/useTheme';
 import { UI } from '@/source/shared/constants/ui';
@@ -35,6 +36,23 @@ export const TodoListScreen = () => {
 
   const isPending = updateTodo.isPending || deleteTodo.isPending;
 
+  const keyExtractor = useCallback((item: Todo) => item.id.toString(), []);
+
+  const renderItem = useCallback(({ item }: { item: Todo }) => (
+    <TodoItem
+      todo={item}
+      onToggleComplete={handleToggleComplete}
+      onDelete={handleDelete}
+      disabled={isPending}
+    />
+  ), [handleToggleComplete, handleDelete, isPending]);
+
+  const getItemLayout = useCallback((_: any, index: number) => ({
+    length: 72,
+    offset: 72 * index,
+    index,
+  }), []);
+
   if (isLoading && !isRefetching) {
     return (
       <View style={[styles.center, { backgroundColor: colors.background }]}>
@@ -59,15 +77,13 @@ export const TodoListScreen = () => {
 
       <FlatList
         data={filteredTodos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <TodoItem
-            todo={item}
-            onToggleComplete={handleToggleComplete}
-            onDelete={handleDelete}
-            disabled={isPending}
-          />
-        )}
+        keyExtractor={keyExtractor}
+        renderItem={renderItem}
+        getItemLayout={getItemLayout}
+        initialNumToRender={10}
+        maxToRenderPerBatch={10}
+        windowSize={5}
+        removeClippedSubviews={true}
         contentContainerStyle={styles.listContent}
         refreshControl={
           <RefreshControl
