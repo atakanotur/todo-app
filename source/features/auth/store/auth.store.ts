@@ -5,10 +5,15 @@ import { secureStorage } from '@/source/services/secureStorage'
 interface AuthState {
   accessToken: string | null
   isAuthenticated: boolean
-  signIn: (tokens: { accessToken: string; refreshToken: string; expiresIn: number; rememberMe?: boolean; email?: string }) => Promise<void>
+  signIn: (tokens: {
+    accessToken: string
+    refreshToken: string
+    expiresIn: number
+    rememberMe?: boolean
+    email?: string
+  }) => Promise<void>
   signOut: () => Promise<void>
   hydrate: () => Promise<string | null>
-  updateAccessToken: (newAccessToken: string) => Promise<void>
 }
 
 export const useAuthStore = create<AuthState>((set) => ({
@@ -16,10 +21,16 @@ export const useAuthStore = create<AuthState>((set) => ({
   refreshToken: null,
   isAuthenticated: false,
 
-  signIn: async ({ accessToken, refreshToken, expiresIn, rememberMe = true, email }) => {
+  signIn: async ({
+    accessToken,
+    refreshToken,
+    expiresIn,
+    rememberMe = true,
+    email,
+  }) => {
     tokenManager.setAccessToken(accessToken, expiresIn)
     await tokenManager.setRefreshToken(refreshToken, rememberMe)
-    
+
     if (rememberMe && email) {
       await secureStorage.storeRememberedEmail(email)
     } else if (!rememberMe) {
@@ -35,7 +46,7 @@ export const useAuthStore = create<AuthState>((set) => ({
 
   hydrate: async () => {
     try {
-      const accessToken = tokenManager.getAccessToken();
+      const accessToken = tokenManager.getAccessToken()
       const refreshToken = await tokenManager.getRefreshToken()
 
       if (refreshToken) {
@@ -47,11 +58,5 @@ export const useAuthStore = create<AuthState>((set) => ({
     }
     set({ accessToken: null, isAuthenticated: false })
     return null
-  },
-
-  updateAccessToken: async (newAccessToken: string) => {
-    //expiresIn güncelle
-    tokenManager.setAccessToken(newAccessToken, 30000)
-    set({ accessToken: newAccessToken })
   },
 }))

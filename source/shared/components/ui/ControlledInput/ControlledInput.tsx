@@ -29,7 +29,6 @@ export function ControlledInput<TFieldValues extends FieldValues>({
           }}
           onChangeText={onChange}
           value={value as string}
-          // Automatically maps react-hook-form error to the Input error prop
           error={error?.message} 
         />
       )}

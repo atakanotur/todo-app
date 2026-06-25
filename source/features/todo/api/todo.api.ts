@@ -13,7 +13,6 @@ export const TodoAPI = {
   },
 
   createTodo: async (data: CreateTodoDTO): Promise<Todo> => {
-    // DummyJSON uses /todos/add for creating new items
     const response = await apiClient.post<Todo>('/todos', data)
     return response.data
   },

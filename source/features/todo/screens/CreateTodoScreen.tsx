@@ -30,7 +30,6 @@ export const CreateTodoScreen = () => {
   });
 
   const onSubmit = (data: CreateTodoFormValues) => {
-    // 3. Adım: Sabit 5 yerine, oturum açmış kullanıcının ID'sini (yoksa fallback 1) gönderiyoruz.
     createTodo.mutate({
       title: data.title,
       description: data.description,

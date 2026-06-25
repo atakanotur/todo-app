@@ -139,7 +139,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     padding: UI.spacing.lg,
-    paddingBottom: 100, // Make room for FAB
+    paddingBottom: 100,
     flexGrow: 1,
   },
   fab: {
