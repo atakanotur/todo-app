@@ -1,4 +1,4 @@
-# 🏗️ Taskify (React Native Expo Boilerplate & Architectural Masterpiece)
+# 🏗️ TodoApp (React Native Expo Boilerplate & Architectural Masterpiece)
 
 ![React Native](https://img.shields.io/badge/React_Native-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
 ![Expo](https://img.shields.io/badge/Expo-000020?style=for-the-badge&logo=expo&logoColor=white)
@@ -6,7 +6,7 @@
 ![Zustand](https://img.shields.io/badge/Zustand-4A3525?style=for-the-badge&logo=react&logoColor=white)
 ![TanStack Query](https://img.shields.io/badge/TanStack_Query-FF4154?style=for-the-badge&logo=reactquery&logoColor=white)
 
-**Taskify** is a premium, production-grade React Native (Expo) task management application and highly scalable architectural boilerplate. Engineered with uncompromising clean code standards, Feature-Sliced Design (FSD), and advanced state synchronization, this project establishes bulletproof lifecycle patterns for secure authentication, dual-layer token rotation, extreme FlatList virtualization, and robust background memory management.
+**TodoApp** is a premium, production-grade React Native (Expo) task management application and highly scalable architectural boilerplate. Engineered with uncompromising clean code standards, Feature-Sliced Design (FSD), and advanced state synchronization, this project establishes bulletproof lifecycle patterns for secure authentication, dual-layer token rotation, extreme FlatList virtualization, and robust background memory management.
 
 ---
 
@@ -48,8 +48,8 @@ Ensure you have the following installed before proceeding:
 ### 1. Clone the Repository
 
 ```bash
-git clone https://github.com/your-username/taskify-expo-app.git
-cd taskify-expo-app
+git clone https://github.com/your-username/TodoApp-expo-app.git
+cd TodoApp-expo-app
 ```
 
 ### 2. Install Dependencies
@@ -267,7 +267,7 @@ sequenceDiagram
 
 ## 🤝 Contributing
 
-Contributions, issues, and feature requests are highly welcome! Feel free to check the [issues page](https://github.com/your-username/taskify-expo-app/issues).
+Contributions, issues, and feature requests are highly welcome! Feel free to check the [issues page](https://github.com/your-username/TodoApp-expo-app/issues).
 
 1. Fork the project
 2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
